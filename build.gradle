@@ -1,0 +1,47 @@
+buildscript {
+    ext {
+        jsonschema2pojo_version = '0.4.35'
+        jsonschema2pojo_test_version = '0.1.6'
+        swagger_annotations_version = '1.5.21'
+        junit_version = '4.12'
+        mockito_version = '2.21.0'
+        jpa_version = '2.2'
+    }
+}
+plugins {
+    id 'java'
+    id 'eclipse'
+    id 'idea'
+}
+
+group 'com.jsonschema.custom'
+version '0.0.1'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    version = version
+    from('src/main/java') {
+        include '**/*.java'
+    }
+    from {
+        configurations.compile.collect{it.isDirectory() ? it : zipTree(it)}
+    }
+}
+
+dependencies {
+    compileOnly("org.jsonschema2pojo:jsonschema2pojo-core:$jsonschema2pojo_version") {
+        exclude group: "org.json", module: "json"
+        exclude group: "com.google.android", module: "android"
+    }
+    compile("io.swagger:swagger-annotations:$swagger_annotations_version")
+    compile("javax.persistence:javax.persistence-api:$jpa_version")
+
+    testCompile("junit:junit:$junit_version")
+    testCompile("org.mockito:mockito-core:$mockito_version")
+    testCompile("com.googlecode.jsonschema2pojo:jsonschema2pojo-integration-tests:$jsonschema2pojo_test_version")
+}
