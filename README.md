@@ -20,7 +20,7 @@ jsonSchema2Pojo {
     includeAdditionalProperties = false
 }
 ```
-- Add a JSON schema file to your project in the `$PROJECT_DIR/src/main/resources/schema` directory. To see what is supported with the base JSON Schema to POJO library check out their [https://github.com/joelittlejohn/jsonschema2pojo](Git repository).
+- Add a JSON schema file to your project in the `$PROJECT_DIR/src/main/resources/schema` directory. To see what is supported with the base JSON Schema to POJO library check out their [GitHub repository](https://github.com/joelittlejohn/jsonschema2pojo).
 - Build your project and use your generated classes!
 
 ## Example JSON Schema File
