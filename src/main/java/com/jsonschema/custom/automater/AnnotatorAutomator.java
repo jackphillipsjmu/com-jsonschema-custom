@@ -230,7 +230,8 @@ public abstract class AnnotatorAutomator extends AbstractAnnotator {
             if (hasDescription) {
                 String descriptionValue = propertyNode.get(SpringfoxConstants.API_MODEL_DESC).asText();
                 jAnnotationUse.param(SpringfoxConstants.VALUE, descriptionValue);
-            } else {
+            }
+            if (isRequired) {
                 // Mark field as required or not defaulting to false if the value does not exist
                 boolean requiredValue = propertyNode.get(SpringfoxConstants.REQUIRED).asBoolean(false);
                 jAnnotationUse.param(SpringfoxConstants.REQUIRED, requiredValue);
