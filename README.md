@@ -27,8 +27,9 @@ jsonSchema2Pojo {
 ```
 {
   "$schema": "http://json-schema.org/schema#",
-  "title": "Example Entity with JPA and Swagger Annotations",
+  "title": "Example Entity with JPA, Swagger Annotations and JsonIgnoreProperties",
   "type": "object",
+  "ignoreUnknown": true,                 // Place @JsonIgnoreProperties(ignoreUnknown = true) at the Class level
   "entity": true,                        // Place @Entity annotation at the Class level
   "table": {"tableName": "foo_jpa_tbl"}, // Place @Table annotation with the corresponding name at the Class level
   "properties": {
@@ -42,11 +43,11 @@ jsonSchema2Pojo {
       }
     },
     "fooField": {
-       "required": true,                 // Places @ApiModelProperty(required = true) annotation above this field
-       "column": "required_foo_column",
-       "description": "An example column that maps to JPA and is documented by Swagger",
-       "type": "string"
-     },
+      "required": true,                 // Places @ApiModelProperty(required = true) annotation above this field
+      "column": "required_foo_column",
+      "description": "An example column that maps to JPA and is documented by Swagger",
+      "type": "string"
+    },
     "barField": {
       "column": "bar_column",
       "description": "An example column that maps to JPA and is documented by Swagger",
@@ -59,14 +60,12 @@ jsonSchema2Pojo {
 ```
 
 /**
- * Example Entity with JPA and Swagger Annotations
- * <p>
- * 
- * 
+ * Example Entity with JPA, Swagger Annotations and JsonIgnoreProperties
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "foo_jpa_tbl")
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({
     "id",
     "fooField",
