@@ -18,6 +18,19 @@ import org.jsonschema2pojo.GenerationConfig;
  */
 public class SpringfoxAnnotator extends AnnotatorAutomator {
     /**
+     * Add the necessary annotation to cause only non-null values to be included
+     * during serialization.
+     *
+     * @param clazz a generated pojo class, that is serialized to JSON
+     * @param schema the object schema associated with this clazz
+     */
+    @Override
+    public void propertyInclusion(JDefinedClass clazz, JsonNode schema) {
+        // Class level annotations to process
+        handleJsonIgnoreInclusions(clazz, schema);
+    }
+
+    /**
      * Add the necessary annotation to mark a Java field as a JSON property.
      *
      * @param field the field that contains data that will be serialized

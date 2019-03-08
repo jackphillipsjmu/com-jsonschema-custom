@@ -28,17 +28,32 @@ import java.util.Objects;
  * Abstract to be Class used alongside JSON Schema2POJO Library to generate customized Java Objects and provide common
  * functions across the project. This can help support rapid development of code. Future enhancements will utilize the
  * {@link GenerationConfig} per suggestions from the extended {@link AbstractAnnotator} class.
- *
+ * <p>
  * Please reference the JSON Schema2POJO Git Repo for more information
- * @see <a href="https://github.com/joelittlejohn/jsonschema2pojo">JSON Schema2POJO Git Repo</a>
+ *
  * @author Jack Phillips
+ * @see <a href="https://github.com/joelittlejohn/jsonschema2pojo">JSON Schema2POJO Git Repo</a>
  */
 public abstract class AnnotatorAutomator extends AbstractAnnotator {
+
     /**
-     * Add the necessary annotation to cause only non-null values to be included
-     * during serialization.
+     * Add the necessary JsonIgnore annotations to the generated class.
      *
-     * @param clazz a generated pojo class, that is serialized to JSON
+     * @param clazz  a generated pojo class, that is serialized to JSON
+     * @param schema the object schema associated with this clazz
+     */
+    public void handleJsonIgnoreInclusions(JDefinedClass clazz, JsonNode schema) {
+        if (schema.has(SpringfoxConstants.IGNORE_UNKNOWN)) {
+            boolean shouldIgnoreUnknown = schema.get(SpringfoxConstants.IGNORE_UNKNOWN).asBoolean(false);
+            clazz.annotate(SpringfoxConstants.JSON_IGNORE_PROPERTIES)
+                    .param(SpringfoxConstants.IGNORE_UNKNOWN, shouldIgnoreUnknown);
+        }
+    }
+
+    /**
+     * Add the necessary JPA annotations to the generated class.
+     *
+     * @param clazz  a generated pojo class, that is serialized to JSON
      * @param schema the object schema associated with this clazz
      */
     public void handleJpaInclusions(JDefinedClass clazz, JsonNode schema) {
@@ -58,10 +73,10 @@ public abstract class AnnotatorAutomator extends AbstractAnnotator {
     }
 
     /**
-     * Add the necessary annotation to mark a Java field as a JSON property
+     * Add the necessary annotation to mark a Java field as a JPA property
      *
-     * @param field the field that contains data that will be serialized
-     * @param clazz the owner of the field (class to which the field belongs)
+     * @param field        the field that contains data that will be serialized
+     * @param clazz        the owner of the field (class to which the field belongs)
      * @param propertyName the name of the JSON property that this field represents
      * @param propertyNode the schema node defining this property
      */
@@ -79,8 +94,8 @@ public abstract class AnnotatorAutomator extends AbstractAnnotator {
     /**
      * Add the necessary annotation to mark a Java field as a JSON property
      *
-     * @param field the field that contains data that will be serialized
-     * @param clazz the owner of the field (class to which the field belongs)
+     * @param field        the field that contains data that will be serialized
+     * @param clazz        the owner of the field (class to which the field belongs)
      * @param propertyName the name of the JSON property that this field represents
      * @param propertyNode the schema node defining this property
      */
@@ -91,7 +106,7 @@ public abstract class AnnotatorAutomator extends AbstractAnnotator {
     /**
      * Process ID related fields and append to generated POJO
      *
-     * @param field the field that contains data that will be serialized
+     * @param field        the field that contains data that will be serialized
      * @param propertyNode the schema node defining this property
      */
     private void handleIdFields(JFieldVar field, JsonNode propertyNode) {
@@ -111,7 +126,7 @@ public abstract class AnnotatorAutomator extends AbstractAnnotator {
     /**
      * Process Column related fields and append to generated POJO
      *
-     * @param field the field that contains data that will be serialized
+     * @param field        the field that contains data that will be serialized
      * @param propertyNode the schema node defining this property
      */
     private void handleColumnFields(JFieldVar field, JsonNode propertyNode) {
@@ -128,7 +143,7 @@ public abstract class AnnotatorAutomator extends AbstractAnnotator {
     /**
      * Process Multiplicity related fields and append to generated POJO, i.e. OneToOne, ManyToMany, etc.
      *
-     * @param field the field that contains data that will be serialized
+     * @param field        the field that contains data that will be serialized
      * @param propertyNode the schema node defining this property
      */
     private void handleMultiplicityFields(JFieldVar field, JsonNode propertyNode) {
@@ -159,8 +174,8 @@ public abstract class AnnotatorAutomator extends AbstractAnnotator {
     /**
      * Process Join Table related fields and append to generated POJO.
      *
-     * @param field the field that contains data that will be serialized
-     * @param clazz the owner of the field (class to which the field belongs)
+     * @param field        the field that contains data that will be serialized
+     * @param clazz        the owner of the field (class to which the field belongs)
      * @param propertyName the name of the JSON property that this field represents
      * @param propertyNode the schema node defining this property
      */
@@ -184,9 +199,9 @@ public abstract class AnnotatorAutomator extends AbstractAnnotator {
     /**
      * Processes Join Column related fields and appends to generated POJO.
      *
-     * @param propertyNode the schema node defining this property
+     * @param propertyNode   the schema node defining this property
      * @param jAnnotationUse JAnnotationUser to append necessary values for POJO generation
-     * @param annotationKey String key to use in join column
+     * @param annotationKey  String key to use in join column
      */
     private void handleJoinColumns(JsonNode propertyNode, JAnnotationUse jAnnotationUse, String annotationKey) {
         if (propertyNode.has(JpaConstants.JOIN_COLUMNS)) {
@@ -209,12 +224,11 @@ public abstract class AnnotatorAutomator extends AbstractAnnotator {
         }
     }
 
-
     /**
      * Process Java fields and append {@link io.swagger.annotations.ApiModelProperty} along with other internal
      * properties if necessary.
      *
-     * @param field that can have a JDocComment associated with it, used for serializing data.
+     * @param field        that can have a JDocComment associated with it, used for serializing data.
      * @param propertyNode Base class for all JSON nodes, which form the basis of JSON Tree Model
      *                     that Jackson implements.
      */

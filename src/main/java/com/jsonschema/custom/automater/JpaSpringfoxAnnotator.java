@@ -27,6 +27,7 @@ public class JpaSpringfoxAnnotator extends AnnotatorAutomator {
     public void propertyInclusion(JDefinedClass clazz, JsonNode schema) {
         // Class level annotations to process
         handleJpaInclusions(clazz, schema);
+        handleJsonIgnoreInclusions(clazz, schema);
     }
 
     /**
